@@ -1,0 +1,12 @@
+Api = vim.api
+Buff_map = vim.api.nvim_buf_set_keymap
+Bopt = vim.bo
+Cmd = vim.cmd
+Fn = vim.fn
+Glob = vim.g
+Map = vim.api.nvim_set_keymap
+Opt = vim.o
+Schedule = vim.schedule
+Unmap = vim.api.nvim_buf_del_keymap
+Vim = vim
+Wopt = vim.wo
