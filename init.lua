@@ -1,6 +1,7 @@
 require('common')
 require('plugins')
 require('keymappings')
+--require('nvimlspconfig')
 require('coc-config')
 
 -- Text format and encoding
@@ -39,7 +40,7 @@ Cmd[[autocmd BufWritePre * %s/\s\+$//e]]
 require('pears').setup()
 require('indent_blankline').setup{
   show_current_context = true,
-  show_current_context_start = true,
+  show_current_context_start = false,
   char = '▏',
   use_treesitter = true,
 }
@@ -59,16 +60,17 @@ Opt.undodir = '/tmp'
 Cmd('autocmd TermOpen * startinsert')
 
 -- Vim Grepper
-Cmd[[let g:grepper = { 'next_tool': '<leader>g'}]]
+--Cmd[[let g:grepper = { 'next_tool': '<leader>g'}]]
+Glob.grepper = { next_tool = '<leader>g'};
 
 Cmd[[
     packadd nvim-bqf
     packadd fzf
     packadd nvim-treesitter
     packadd vim-grepper
-    packadd coc.nvim
 ]]
 
+    --packadd coc.nvim
 -- https://github.com/mhinz/vim-grepper
 Glob.grepper = {tools = {'rg', 'grep'}, searchreg = 1}
 
@@ -88,6 +90,7 @@ Opt.wmh = 0
 
 -- Theme options
 Cmd[[colorscheme tender]]
+
 require('lualine').setup {
   options = {
     component_separators = {left = '>', right = '<'},
@@ -104,22 +107,22 @@ Glob.python3_host_prog = '/usr/bin/python'
 Glob.python_host_prog = '/usr/bin/python2'
 
 -- Change nvim-tree root directory
-Glob.nvim_tree_respect_buf_cwd = 1
 require('nvim-tree').setup({
   update_cwd = true,
+  respect_buf_cwd = true,
   update_focused_file = {
     enable = true,
     update_cwd = true
   },
 })
 
-require('renamer').setup()
+require('renamer').setup{}
 require('project_nvim').setup()
 
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers),
   -- or a list of languages
-  ensure_installed = "maintained",
+  ensure_installed = {"c", "cpp", "lua", "rust", "python"},
 
   update_cwd = true,
   highlight = {
@@ -135,6 +138,16 @@ require'nvim-treesitter.configs'.setup {
   }
 }
 
+-- Emmet shortcuts
+Glob.user_emmet_mode='n'
+Glob.user_emmet_leader_key=','
+
+Glob.html_indent_script1='inc'
+Glob.html_indent_style1='inc'
+
+-- Custom comments
+Glob.NERDCustomDelimiters = { html = { left = '/* ', right = ' */'}};
+
 -- Compile plugins on change
 Cmd[[
   augroup packer_user_config
@@ -142,3 +155,70 @@ Cmd[[
     autocmd BufWritePost plugins.lua source <afile> | PackerCompile
   augroup end
 ]]
+
+Glob.completeopt = 'menu,preview,noinsert'
+
+-- Add additional capabilities supported by nvim-cmp
+--local capabilities = vim.lsp.protocol.make_client_capabilities()
+--capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+--local lspconfig = require('lspconfig')
+
+-- Enable some language servers with the additional completion capabilities offered by nvim-cmp
+--local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver' }
+--for _, lsp in ipairs(servers) do
+  --lspconfig[lsp].setup {
+     --on_attach = my_custom_on_attach,
+    --capabilities = capabilities,
+  --}
+--end
+
+--require('rust-tools').setup({})
+
+-- luasnip setup
+local luasnip = require 'luasnip'
+
+-- nvim-cmp setup
+--local cmp = require 'cmp'
+--cmp.setup {
+  --snippet = {
+    --expand = function(args)
+      --luasnip.lsp_expand(args.body)
+    --end,
+  --},
+  --mapping = cmp.mapping.preset.insert({
+    --['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    --['<C-f>'] = cmp.mapping.scroll_docs(4),
+    --['<C-Space>'] = cmp.mapping.complete(),
+    --['<CR>'] = cmp.mapping.confirm {
+      --behavior = cmp.ConfirmBehavior.Replace,
+      --select = true,
+    --},
+    --['<Tab>'] = cmp.mapping(function(fallback)
+      --if cmp.visible() then
+        --cmp.select_next_item()
+      --elseif luasnip.expand_or_jumpable() then
+        --luasnip.expand_or_jump()
+      --else
+        --fallback()
+      --end
+    --end, { 'i', 's' }),
+    --['<S-Tab>'] = cmp.mapping(function(fallback)
+      --if cmp.visible() then
+        --cmp.select_prev_item()
+      --elseif luasnip.jumpable(-1) then
+        --luasnip.jump(-1)
+      --else
+        --fallback()
+      --end
+    --end, { 'i', 's' }),
+  --}),
+  --sources = {
+    --{ name = 'nvim_lsp' },
+    --{ name = 'luasnip' },
+  --},
+--}
+
+--vim.diagnostic.config({
+  --virtual_text = false,
+--})

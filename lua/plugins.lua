@@ -24,6 +24,17 @@ return require('packer').startup(function(use)
   use {'neoclide/coc.nvim', branch = 'release' }
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
   use 'rafcamlet/coc-nvim-lua'
+  use 'mattn/emmet-vim'
+  use 'pangloss/vim-javascript'
+  use 'davisdude/vim-love-docs'
+  --use 'neovim/nvim-lspconfig'
+  --use 'hrsh7th/nvim-cmp'
+  --use 'hrsh7th/cmp-nvim-lsp'
+  --use 'saadparwaiz1/cmp_luasnip'
+  use 'L3MON4D3/LuaSnip'
+  --use 'williamboman/nvim-lsp-installer'
+  --use 'simrat39/rust-tools.nvim'
+  use 'nvim-lua/plenary.nvim'
 
   -- Bracket pair colorizer
   use 'lukas-reineke/indent-blankline.nvim'
@@ -36,11 +47,7 @@ return require('packer').startup(function(use)
   use 'nvie/vim-flake8'
 
   -- VS-Code like renaming
-  use {
-    'filipdutescu/renamer.nvim',
-    branch = 'master',
-    requires = { {'nvim-lua/plenary.nvim'} }
-  }
+  use { 'filipdutescu/renamer.nvim', branch = 'master' }
 
   -- File Explorer
   use {
