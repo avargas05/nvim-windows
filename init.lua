@@ -3,6 +3,10 @@ require('plugins')
 require('keymappings')
 require('lsp-config')
 
+-- Sources
+Glob.node_host_prog = "~/AppData/Local/Yarn/bin/neovim-node-host"
+Glob.python3_host_prog = "~/scoop/apps/python/current/py.exe"
+
 -- Text format and encoding
 Opt.encoding = 'utf-8'
 Bopt.fileencoding = 'utf-8'
@@ -175,3 +179,9 @@ local lsp = require('lsp-zero')
 lsp.preset('recommended')
 lsp.nvim_workspace()
 lsp.setup()
+
+require('cmp').setup {
+  sources = {
+    { name = 'cmp_tabnine' }
+  }
+}

@@ -20,9 +20,7 @@ return require('packer').startup(function(use)
   use 'junegunn/fzf'
 
   -- Text parser, LSP, and syntax checkers and semantic highlights
-  --use {'neoclide/coc.nvim', branch = 'release' }
   use {'nvim-treesitter/nvim-treesitter'}
-  --use 'rafcamlet/coc-nvim-lua'
   use 'mattn/emmet-vim'
   use 'L3MON4D3/LuaSnip'
   use 'nvim-lua/plenary.nvim'
@@ -58,7 +56,12 @@ return require('packer').startup(function(use)
     after = { "hrsh7th/nvim-cmp" },
     requires = { "hrsh7th/nvim-cmp" },
   }
-  -- See hrsh7th other plugins for more great completion sources!
+
+  use { 'tzachar/cmp-tabnine',
+    after = "nvim-cmp",
+    run='powershell ./install.ps1',
+    requires = 'hrsh7th/nvim-cmp'
+  }
   -- Snippet engine
   use 'hrsh7th/vim-vsnip'
   -- Adds extra functionality over rust analyzer
