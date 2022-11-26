@@ -15,26 +15,58 @@ return require('packer').startup(function(use)
 
   -- Better quickfix window
   use {'kevinhwang91/nvim-bqf', ft = 'qf'}
-  use {'mhinz/vim-grepper'}
 
   -- Fuzzy finder
   use 'junegunn/fzf'
 
   -- Text parser, LSP, and syntax checkers and semantic highlights
-  use {'neoclide/coc.nvim', branch = 'release' }
-  use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
-  use 'rafcamlet/coc-nvim-lua'
+  --use {'neoclide/coc.nvim', branch = 'release' }
+  use {'nvim-treesitter/nvim-treesitter'}
+  --use 'rafcamlet/coc-nvim-lua'
   use 'mattn/emmet-vim'
-  use 'pangloss/vim-javascript'
-  use 'davisdude/vim-love-docs'
-  --use 'neovim/nvim-lspconfig'
-  --use 'hrsh7th/nvim-cmp'
-  --use 'hrsh7th/cmp-nvim-lsp'
-  --use 'saadparwaiz1/cmp_luasnip'
   use 'L3MON4D3/LuaSnip'
-  --use 'williamboman/nvim-lsp-installer'
-  --use 'simrat39/rust-tools.nvim'
   use 'nvim-lua/plenary.nvim'
+
+  -- Language server protocols
+  use 'VonHeikemen/lsp-zero.nvim'
+  use { 'neovim/nvim-lspconfig',
+    requires = {
+      'saadparwaiz1/cmp_luasnip',
+      'hrsh7th/cmp-nvim-lua',
+      'rafamadriz/friendly-snippets'
+    }
+  }
+  use 'williamboman/mason.nvim'
+  use 'williamboman/mason-lspconfig.nvim'
+
+  use { "j-hui/fidget.nvim",
+    config = function()
+      require("fidget").setup()
+    end
+  }
+
+  -- Autocompletion framework
+  use "hrsh7th/nvim-cmp"
+  use {
+    -- cmp LSP completion
+    "hrsh7th/cmp-nvim-lsp",
+    -- cmp Snippet completion
+    "hrsh7th/cmp-vsnip",
+    -- cmp Path completion
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-buffer",
+    after = { "hrsh7th/nvim-cmp" },
+    requires = { "hrsh7th/nvim-cmp" },
+  }
+  -- See hrsh7th other plugins for more great completion sources!
+  -- Snippet engine
+  use 'hrsh7th/vim-vsnip'
+  -- Adds extra functionality over rust analyzer
+  use "simrat39/rust-tools.nvim"
+
+  -- Optional
+  use "nvim-lua/popup.nvim"
+  use "nvim-telescope/telescope.nvim"
 
   -- Bracket pair colorizer
   use 'lukas-reineke/indent-blankline.nvim'
@@ -59,6 +91,7 @@ return require('packer').startup(function(use)
 
   -- Colorschemes
   use 'jacoborus/tender.vim'
+  use 'EdenEast/nightfox.nvim'
 
   -- Git plugins
   use 'tpope/vim-fugitive'
