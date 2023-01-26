@@ -1,42 +1,44 @@
 require('common')
+G.loaded_netrw=1
+G.loaded_netrwPlugin = 1
+
 require('plugins')
 require('keymappings')
-require('lsp-config')
 
 -- Sources
-Glob.node_host_prog = "~/AppData/Local/Yarn/bin/neovim-node-host"
-Glob.python3_host_prog = "~/scoop/apps/python/current/py.exe"
+G.node_host_prog = "~/AppData/Local/Yarn/bin/neovim-node-host"
+G.python3_host_prog = "~/scoop/apps/python/current/py.exe"
 
 -- Text format and encoding
-Opt.encoding = 'utf-8'
-Bopt.fileencoding = 'utf-8'
+O.encoding = 'utf-8'
+BO.fileencoding = 'utf-8'
 
 -- Window
-Opt.number = true
-Opt.relativenumber = true
+O.number = true
+O.relativenumber = true
 
 -- Mouse
-Opt.mouse = 'a'
+O.mouse = 'a'
 
 -- Window splits
-Opt.splitbelow = true
-Opt.splitright = true
+O.splitbelow = true
+O.splitright = true
 
 -- Editing
-Opt.tabstop = 2
-Opt.shiftwidth = 2
-Opt.softtabstop = 2
-Opt.expandtab = true
-Opt.autoindent = true
-Opt.cc = '80'
-Opt.breakindent = true
-Opt.breakindentopt = 'shift:2'
-Cmd[[autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=79 cc=80,73]]
-Cmd[[autocmd FileType meson setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=79 cc=80]]
-Cmd[[autocmd FileType c setlocal cc=100]]
-Cmd[[autocmd FileType h setlocal cc=100]]
-Cmd[[autocmd FileType rust setlocal cc=100]]
-Cmd[[autocmd BufWritePre * %s/\s\+$//e]]
+O.tabstop = 2
+O.shiftwidth = 2
+O.softtabstop = 2
+O.expandtab = true
+O.autoindent = true
+O.cc = '80'
+O.breakindent = true
+O.breakindentopt = 'shift:2'
+CMD[[autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=79 cc=80,73]]
+CMD[[autocmd FileType meson setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=79 cc=80]]
+CMD[[autocmd FileType c setlocal cc=100]]
+CMD[[autocmd FileType h setlocal cc=100]]
+CMD[[autocmd FileType rust setlocal cc=100]]
+CMD[[autocmd BufWritePre * %s/\s\+$//e]]
 
 -- Bracket Pairs
 require('pears').setup()
@@ -48,74 +50,64 @@ require('indent_blankline').setup{
 }
 
 -- Code Folding
-Wopt.foldmethod = 'indent'
-Opt.foldlevel = 99
+WO.foldmethod = 'indent'
+O.foldlevel = 99
 
 -- Wrap
-Wopt.wrap = false
+WO.wrap = false
 
 -- Persist undo after closing buffer
-Opt.undofile = true
-Opt.undodir = '/tmp'
+O.undofile = true
+O.undodir = '/tmp'
 
 -- Autoinsert on open term
-Cmd('autocmd TermOpen * startinsert')
+CMD('autocmd TermOpen * startinsert')
 
 -- Vim Grepper
-Glob.grepper = { next_tool = '<leader>g'};
+G.grepper = { next_tool = '<leader>g'};
 
-Cmd[[
-    packadd nvim-bqf
+CMD[[
     packadd fzf
     packadd nvim-treesitter
 ]]
 
-Cmd(([[
-    aug Grepper
-        au!
-        au User Grepper ++nested %s
-    aug END
-]]):format([[call setqflist([], 'r', {'context': {'bqf': {'pattern_hl': '\%#' . getreg('/')}}})]]))
-
 -- Lightline
-Opt.laststatus = 2
-Opt.showmode = false
+O.laststatus = 2
+O.showmode = false
 
 -- Set minimum window height
-Opt.wmh = 0
+O.wmh = 0
 
 -- Theme options
-Cmd[[colorscheme carbonfox]]
+CMD[[colorscheme carbonfox]]
 
 require('lualine').setup {
   options = {
     component_separators = {left = '>', right = '<'},
     section_separators = {left = '', right = ''},
-  }
+  },
+  tabline = {
+    lualine_a = {'tabs'},
+    lualine_b = {'buffers'},
+  },
+  sections = {
+    lualine_b = {'filename', 'branch'},
+    lualine_c = {'diff', 'diagnostics'},
+  },
 }
 
 -- Custom column colors
-Cmd[[hi VertSplit ctermfg=234 ctermbg=234 cterm=NONE]]
-Cmd[[hi LineNr ctermfg=100 ctermbg=NONE cterm=NONE]]
-
--- Change nvim-tree root directory and bindings
-local status_ok, nvim_tree_config = pcall(require, "nvim-tree")
-if not status_ok then
-  return
-end
-
-local config_status_ok, nvim_tree_config = pcall(require, "nvim-tree.config")
-if not config_status_ok then
-  return
-end
+CMD[[hi VertSplit ctermfg=234 ctermbg=234 cterm=NONE]]
+CMD[[hi LineNr ctermfg=100 ctermbg=NONE cterm=NONE]]
 
 require('nvim-tree').setup{
-  update_cwd = true,
+  sync_root_with_cwd = true,
   respect_buf_cwd = true,
   update_focused_file = {
     enable = true,
-    update_cwd = true
+    update_root = true
   },
+  root_dirs = { ".git" },
   view = {
     mappings = {
       list = {
@@ -129,10 +121,11 @@ require('nvim-tree').setup{
   },
 }
 
-
+require('symbols-outline').setup()
 require('renamer').setup()
-require('project_nvim').setup()
-
+require('project_nvim').setup({
+  patterns = { ".git" },
+})
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers),
   -- or a list of languages
@@ -155,33 +148,24 @@ require'nvim-treesitter.configs'.setup {
 }
 
 -- Emmet shortcuts
-Glob.user_emmet_mode='n'
-Glob.user_emmet_leader_key=','
+G.user_emmet_mode='n'
+G.user_emmet_leader_key=','
 
-Glob.html_indent_script1='inc'
-Glob.html_indent_style1='inc'
+G.html_indent_script1='inc'
+G.html_indent_style1='inc'
 
 -- Custom comments
-Glob.NERDCustomDelimiters = { html = { left = '/* ', right = ' */'}};
+G.NERDCustomDelimiters = { html = { left = '/* ', right = ' */'}};
 
 -- Compile plugins on change
-Cmd[[
+CMD[[
   augroup packer_user_config
     autocmd!
     autocmd BufWritePost plugins.lua source <afile> | PackerCompile
   augroup end
 ]]
 
--- luasnip setup
-local luasnip = require 'luasnip'
-
 local lsp = require('lsp-zero')
 lsp.preset('recommended')
 lsp.nvim_workspace()
 lsp.setup()
-
-require('cmp').setup {
-  sources = {
-    { name = 'cmp_tabnine' }
-  }
-}
